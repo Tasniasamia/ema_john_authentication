@@ -1,32 +1,27 @@
 import React, { useContext, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthProviderdata } from '../AuthProvider/AuthProvider';
-import './Login.css'
-const Login = () => {
-    
-    const location=useLocation();
-    const navigate=useNavigate('');
-
-    console.log(location);
-    let from=location.state?.from?.pathname || "/";
+import './Resister.css'
+const Resister = () => {
     const receivedata=useContext(AuthProviderdata);
-    const{signin}=receivedata;
+    const{signup}=receivedata;
     const[error,setError]=useState('');
     const[success,setSuccess]=useState('');
     function submit(event){
         event.preventDefault();
         const email=event.target.email.value;
         const password=event.target.password.value;
-       
-        signin(email,password)
+        const confrim_pass=event.target.confrim_password.value;
+        if(password!=confrim_pass){
+            setError("Your password haven't matched");
+        }
+        signup(email,password)
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
             console.log(user);
             setSuccess('User has successfully submited');
             setError('');
-            event.target.reset();
-            navigate(from);
             // ...
           })
           .catch((error) => {
@@ -40,9 +35,9 @@ const Login = () => {
     }
     return (
         
-            <div className='signin_section'>
-                <div className='signin'>
-            <h2 style={{textAlign:"center"}}>Login</h2>
+            <div className='signup_section'>
+                <div className='signup'>
+            <h2 style={{textAlign:"center"}}>Sign Up</h2>
 
             <form onSubmit={submit}>
                 <div>
@@ -53,12 +48,15 @@ const Login = () => {
                     <label htmlFor="password">Password</label>
                     <input type="password" name="password" id="password" />
                 </div>
-              
+                <div>
+                    <label htmlFor="confrim_password">Confrim Password</label>
+                    <input type="password" name="confrim_password" id="confrim_password" />
+                </div>
                 <div style={{marginTop:"20px"}}>
-                    <input type="submit" value="Login" /> </div>
+                    <input type="submit" value="Sign Up" /> </div>
                     <p style={{color:"red",textAlign:"center"}}>{error}</p>
                     <p style={{color:"green",textAlign:"center"}}>{success}</p>
-                    <p style={{textAlign:"center",marginBottom:"20px"}}>New to Ema_John?<Link to="/Resister">Create a New Account</Link></p>
+                    <p style={{textAlign:"center",marginBottom:"20px"}}>Already have an account? <Link to="/login">Login</Link></p>
                
                 <hr />
                 <div  style={{textAlign:"center",border:"1px solid #95A0A7",padding:"10px",marginTop:"20px"}}>
@@ -71,4 +69,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Resister;
